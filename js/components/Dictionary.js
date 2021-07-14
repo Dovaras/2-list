@@ -2,7 +2,7 @@ class Dictionary {
     constructor(selectorius, pavadinimas, list) {
         this.selector = selectorius;
         this.name = pavadinimas;
-        this.dictionarylist = list;
+        this.dictionaryList = list;
 
         // tai elementas, kuriame generuosime visa turini
         this.DOM = null;
@@ -31,8 +31,8 @@ class Dictionary {
     }
 
     isValidDictionary() {
-        if (!Array.isArray(this.dictionarylist) ||
-            this.dictionarylist.length === 0) {
+        if (!Array.isArray(this.dictionaryList) ||
+            this.dictionaryList.length === 0) {
             console.error('ERROR: zodynas turi buti ne tuscias array.');
             return false;
         }
@@ -44,12 +44,42 @@ class Dictionary {
         if (!this.DOM) {
             console.error('ERROR: pagal pateikta selector, norimo elemento nepavyko rasti.');
             return false;
-        } 
+        }
         return true;
     }
 
     render() {
-        console.log('piesiam turini........');
+        let HTML = '';
+        for(let i = 0; i < this.dictionaryList.length; i++) {
+            const wordPair = this.dictionaryList[i];
+
+            if (!this.isValidWordPair(wordPair)) {
+                continue;
+            }
+
+            HTML += `<div class="item">
+                        <div class="col">${wordPair.en}</div>
+                        <div class="col">${wordPair.lt}</div>
+                    </div>`;
+        }
+      
+        this.DOM.innerHTML = HTML;
+    }
+
+    isValidWordPair(pair) {
+        if (typeof pair !== 'object' ||
+            Array.isArray(pair) ||
+            pair === null ||
+            !pair.en ||
+            !pair.lt ||
+            typeof pair.en !== 'string' ||
+            pair.en === '' ||
+            typeof pair.lt !== 'string' ||
+            pair.lt === '') {
+            console.warn(`WARNING: verciamu zodziu pora (gaute reiksme: ${pair}) turi buti objektas su "en" ir "lt" parametrais, kuriu abu turi buti ne tusti tekstai.`);
+            return false;
+        }
+        return true;
     }
 }
 
